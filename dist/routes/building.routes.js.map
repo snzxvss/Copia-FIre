@@ -1,0 +1,1 @@
+{"version":3,"file":"building.routes.js","sourceRoot":"","sources":["../../src/routes/building.routes.ts"],"names":[],"mappings":";;AAAA,qCAAiC;AACjC,8EAAmH;AACnH,2EAA2F;AAG3F,MAAM,MAAM,GAAG,IAAA,gBAAM,GAAE,CAAC;AAExB,MAAM,CAAC,IAAI,CAAE,qBAAqB,EAAE,oDAA6B,EAAG,wCAAkB,CAAC,CAAC;AAExF,MAAM,CAAC,GAAG,CAAG,qBAAqB,EAAE,oDAA6B,EAAG,wCAAkB,CAAC,CAAC;AAExF,kBAAe,MAAM,CAAC"}

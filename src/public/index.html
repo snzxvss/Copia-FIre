@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API - Carpeta Public</title>
+  <style>
+    /* Estilos generales */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    
+    /* Encabezado */
+    header {
+      background-color: #333;
+      padding: 20px;
+      color: #fff;
+    }
+    
+    /* Contenido principal */
+    .container {
+      flex-grow: 1;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    /* Pie de página */
+    footer {
+      background-color: #333;
+      padding: 20px;
+      color: #fff;
+      text-align: center;
+    }
+    
+    /* Estilos adicionales para dispositivos móviles */
+    @media (max-width: 600px) {
+      header, footer {
+        padding: 10px;
+      }
+      
+      .container {
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>API - Carpeta Public</h1>
+  </header>
+  
+  <div class="container">
+    <h2>Bienvenido a la API</h2>
+    <p>Esta API está construida con Node.js y Express.</p>
+    <!-- Agrega aquí el contenido específico de tu API -->
+    <div style="text-align: center;"><a href="http://localhost:9000/api-docs">Swagger</a></div>
+  </div>
+  
+  <footer>
+    <p>© 2023 Tu API. Todos los derechos reservados.</p>
+  </footer>
+</body>
+</html>

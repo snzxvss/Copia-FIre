@@ -1,0 +1,24 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const client_controller_1 = require("../controller/client_controller");
+const client_middlewares_1 = require("../middlewares/client_middlewares");
+const router = (0, express_1.Router)();
+router.post("/getClientInfo", client_middlewares_1.getClientInfoMiddewares, client_controller_1.getClientInfo);
+router.get("/clientsPdfReport", client_controller_1.clientsPdfReport);
+router.get("/clientsXlsxReport", client_controller_1.clientsXlsxReport);
+router.get("/clientDetailPdfReport", client_controller_1.ClientDetailPDF);
+router.get("/clientDetailXlsxReport", client_controller_1.ClientDetailXLSX);
+router.post("/exportClientsToPDF", client_middlewares_1.exportClientsMiddlewares, client_controller_1.exportClientsToPDF);
+router.post("/exportClientsToXLSX", client_middlewares_1.exportClientsMiddlewares, client_controller_1.exportClientsToXLSX);
+router.post("/exportClientDetailToPDF", client_middlewares_1.exportClientDetailMiddlewares, client_controller_1.exportClientDetailToPDF);
+router.post("/exportClientDetailToXLSX", client_middlewares_1.exportClientDetailMiddlewares, client_controller_1.exportClientDetailToXLSX);
+router.post("/createClient", client_middlewares_1.createClientMiddlewares, client_controller_1.createClient);
+router.post("/createClientContact", client_middlewares_1.createClientContactMiddlewares, client_controller_1.createClientContact);
+router.post("/createClientbuilding", client_middlewares_1.createClientBuildingMiddlewares, client_controller_1.createClientBuilding);
+router.put("/updateClient", client_middlewares_1.updateClientMiddlewares, client_controller_1.updateClient);
+router.put("/updateClientContact", client_middlewares_1.updateClientContactMiddlewares, client_controller_1.updateClientContact);
+router.put("/updateClientBuilding", client_middlewares_1.updateClientBuildingMiddlewares, client_controller_1.updateClientBuilding);
+router.delete("/deleteClientContact", client_middlewares_1.deleteClientcontactMiddlewares, client_controller_1.deleteClientContact);
+exports.default = router;
+//# sourceMappingURL=client.routes.js.map
