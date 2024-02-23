@@ -33,6 +33,240 @@ const swaggerDefinition = {
                     },
                 }
             },
+            Task: {
+                type: "object",
+                properties: {
+                    taskId: {
+                        type: "string",
+                        example: "1",
+                        description: "ID de la tarea"
+                    },
+                    taskDescription: {
+                        type: "string",
+                        example: "Realizar mantenimiento preventivo en extintores",
+                        description: "Descripción de la tarea"
+                    },
+                    taskStartNewExtinguisherCount: {
+                        type: "integer",
+                        example: 10,
+                        description: "Cantidad inicial de extintores nuevos en la tarea"
+                    },
+                    taskStartRechargedExtinguisherCount: {
+                        type: "integer",
+                        example: 5,
+                        description: "Cantidad inicial de extintores recargados en la tarea"
+                    },
+                    taskExpectedEndDate: {
+                        type: "string",
+                        format: "date",
+                        example: "2024-02-22",
+                        description: "Fecha esperada de finalización de la tarea"
+                    },
+                    clientId: {
+                        type: "string",
+                        example: "12345",
+                        description: "ID del cliente asociado a la tarea"
+                    },
+                    buildingId: {
+                        type: "string",
+                        example: "67890",
+                        description: "ID del edificio asociado a la tarea"
+                    },
+                    taskStateId: {
+                        type: "string",
+                        example: "2",
+                        description: "ID del estado de la tarea"
+                    },
+                    assignedUser: {
+                        type: "string",
+                        example: "user123",
+                        description: "Usuario asignado a la tarea"
+                    },
+                    taskCreator: {
+                        type: "string",
+                        example: "admin",
+                        description: "Usuario que creó la tarea"
+                    }
+                }
+            },
+            NewTask: {
+                type: "object",
+                properties: {
+                    taskDescription: {
+                        type: "string",
+                        example: "Realizar mantenimiento preventivo en extintores",
+                        description: "Descripción de la tarea"
+                    },
+                    taskStartNewExtinguisherCount: {
+                        type: "integer",
+                        example: 10,
+                        description: "Cantidad inicial de extintores nuevos en la tarea"
+                    },
+                    taskStartRechargedExtinguisherCount: {
+                        type: "integer",
+                        example: 5,
+                        description: "Cantidad inicial de extintores recargados en la tarea"
+                    },
+                    taskExpectedEndDate: {
+                        type: "string",
+                        format: "date",
+                        example: "2024-02-22",
+                        description: "Fecha esperada de finalización de la tarea"
+                    },
+                    clientId: {
+                        type: "string",
+                        example: "12345",
+                        description: "ID del cliente asociado a la tarea"
+                    },
+                    buildingId: {
+                        type: "string",
+                        example: "67890",
+                        description: "ID del edificio asociado a la tarea"
+                    },
+                    taskExtinguishers: {
+                        type: "array",
+                        items: {
+                            type: "object",
+                            properties: {
+                                extinguisherTypeId: {
+                                    type: "string",
+                                    example: "abc123",
+                                    description: "ID del tipo de extintor"
+                                },
+                                extinguisherSizeId: {
+                                    type: "string",
+                                    example: "def456",
+                                    description: "ID del tamaño de extintor"
+                                }
+                            }
+                        },
+                        description: "Lista de extintores asociados a la tarea"
+                    }
+                },
+                required: ["taskDescription", "taskStartNewExtinguisherCount", "taskStartRechargedExtinguisherCount", "taskExpectedEndDate", "clientId", "buildingId"]
+            },
+            UpdateTask: {
+                type: "object",
+                properties: {
+                    taskId: {
+                        type: "string",
+                        example: "1",
+                        description: "ID de la tarea a actualizar"
+                    },
+                    taskDescription: {
+                        type: "string",
+                        example: "Realizar mantenimiento correctivo en extintores",
+                        description: "Nueva descripción de la tarea"
+                    },
+                    clientId: {
+                        type: "string",
+                        example: "54321",
+                        description: "Nuevo ID del cliente asociado a la tarea"
+                    },
+                    buildingId: {
+                        type: "string",
+                        example: "09876",
+                        description: "Nuevo ID del edificio asociado a la tarea"
+                    },
+                    taskEndDate: {
+                        type: "string",
+                        format: "date",
+                        example: "2024-02-25",
+                        description: "Nueva fecha de finalización de la tarea"
+                    }
+                }
+            },
+            AssignTask: {
+                type: "object",
+                properties: {
+                    taskId: {
+                        type: "string",
+                        example: "1",
+                        description: "ID de la tarea a asignar"
+                    },
+                    assignedUser: {
+                        type: "string",
+                        example: "user123",
+                        description: "Usuario al que se asignará la tarea"
+                    }
+                },
+                required: ["taskId", "assignedUser"]
+            },
+            ManageTask: {
+                type: "object",
+                properties: {
+                // Define los campos necesarios para el esquema "ManageTask"
+                }
+            },
+            CancelTask: {
+                type: "object",
+                properties: {
+                    taskId: {
+                        type: "string",
+                        example: "1",
+                        description: "ID de la tarea a cancelar"
+                    }
+                },
+                required: ["taskId"]
+            },
+            CompleteTask: {
+                type: "object",
+                properties: {
+                    taskId: {
+                        type: "string",
+                        example: "1",
+                        description: "ID de la tarea a marcar como completada"
+                    }
+                },
+                required: ["taskId"]
+            },
+            ReportTask: {
+                type: "object",
+                properties: {
+                    taskId: {
+                        type: "string",
+                        example: "1",
+                        description: "ID de la tarea a reportar"
+                    }
+                },
+                required: ["taskId"]
+            },
+            ExportTaskXLSX: {
+                type: "object",
+                properties: {
+                    startDate: {
+                        type: "string",
+                        format: "date",
+                        example: "2024-02-01",
+                        description: "Fecha de inicio del rango para exportar tareas"
+                    },
+                    finalDate: {
+                        type: "string",
+                        format: "date",
+                        example: "2024-02-15",
+                        description: "Fecha final del rango para exportar tareas"
+                    }
+                },
+                required: ["startDate", "finalDate"]
+            },
+            ExportTaskPDF: {
+                type: "object",
+                properties: {
+                    startDate: {
+                        type: "string",
+                        format: "date",
+                        example: "2024-02-01",
+                        description: "Fecha de inicio del rango para exportar tareas"
+                    },
+                    finalDate: {
+                        type: "string",
+                        format: "date",
+                        example: "2024-02-15",
+                        description: "Fecha final del rango para exportar tareas"
+                    }
+                },
+                required: ["startDate", "finalDate"]
+            }
         }
     },
     paths: {
@@ -3926,9 +4160,6 @@ const swaggerDefinition = {
                 }
             }
         },
-        /**
-         ** Info
-         */
         "/api/info/getLocationInfo": {
             get: {
                 tags: ["Get info - info"]
@@ -3943,7 +4174,600 @@ const swaggerDefinition = {
             get: {
                 tags: ["Get info - info"]
             }
+        }, /**
+         ** Task
+         */
+        "/api/task/getTaskInfo": {
+            post: {
+                tags: ["Tasks - Task"],
+                summary: "Obtener información de la tarea",
+                description: "Obtiene información detallada de una tarea según su ID.",
+                operationId: "getTaskInfo",
+                parameters: [
+                    {
+                        name: "taskId",
+                        in: "body",
+                        required: true,
+                        schema: {
+                            type: "object",
+                            properties: {
+                                taskId: {
+                                    type: "string",
+                                    example: "1001"
+                                }
+                            }
+                        }
+                    }
+                ],
+                responses: {
+                    200: {
+                        description: "Solicitud exitosa",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    type: "object",
+                                    properties: {
+                                        success: {
+                                            type: "boolean",
+                                            example: true
+                                        },
+                                        msg: {
+                                            type: "string",
+                                            example: "Task info."
+                                        },
+                                        data: {
+                                            $ref: "#/components/schemas/Task"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    400: {
+                        description: "Solicitud incorrecta",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         },
+        "/api/task/createTask": {
+            post: {
+                tags: ["Tasks - Task"],
+                summary: "Crear una nueva tarea",
+                description: "Crea una nueva tarea con los datos proporcionados.",
+                operationId: "createTask",
+                requestBody: {
+                    content: {
+                        "application/json": {
+                            schema: {
+                                $ref: "#/components/schemas/NewTask"
+                            }
+                        }
+                    }
+                },
+                responses: {
+                    200: {
+                        description: "Solicitud exitosa",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    type: "object",
+                                    properties: {
+                                        success: {
+                                            type: "boolean",
+                                            example: true
+                                        },
+                                        msg: {
+                                            type: "string",
+                                            example: "Create Task"
+                                        },
+                                        data: {
+                                            $ref: "#/components/schemas/Task"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    400: {
+                        description: "Solicitud incorrecta",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/task/updateTask": {
+            put: {
+                tags: ["Tasks - Task"],
+                summary: "Actualizar una tarea existente",
+                description: "Actualiza una tarea existente con los datos proporcionados.",
+                operationId: "updateTask",
+                requestBody: {
+                    content: {
+                        "application/json": {
+                            schema: {
+                                $ref: "#/components/schemas/UpdateTask"
+                            }
+                        }
+                    }
+                },
+                responses: {
+                    200: {
+                        description: "Solicitud exitosa",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    type: "object",
+                                    properties: {
+                                        success: {
+                                            type: "boolean",
+                                            example: true
+                                        },
+                                        msg: {
+                                            type: "string",
+                                            example: "Update Task"
+                                        },
+                                        data: {
+                                            $ref: "#/components/schemas/Task"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    400: {
+                        description: "Solicitud incorrecta",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/task/assignTask": {
+            put: {
+                tags: ["Tasks - Task"],
+                summary: "Asignar una tarea",
+                description: "Asigna una tarea existente a un usuario específico.",
+                operationId: "assignTask",
+                requestBody: {
+                    content: {
+                        "application/json": {
+                            schema: {
+                                $ref: "#/components/schemas/AssignTask"
+                            }
+                        }
+                    }
+                },
+                responses: {
+                    200: {
+                        description: "Solicitud exitosa",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    type: "object",
+                                    properties: {
+                                        success: {
+                                            type: "boolean",
+                                            example: true
+                                        },
+                                        msg: {
+                                            type: "string",
+                                            example: "Assign Task"
+                                        },
+                                        data: {
+                                            $ref: "#/components/schemas/Task"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    400: {
+                        description: "Solicitud incorrecta",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/task/manageTask": {
+            put: {
+                tags: ["Tasks - Task"],
+                summary: "Gestionar una tarea",
+                description: "Gestiona una tarea existente según los datos proporcionados.",
+                operationId: "manageTask",
+                requestBody: {
+                    content: {
+                        "application/json": {
+                            schema: {
+                                $ref: "#/components/schemas/ManageTask"
+                            }
+                        }
+                    }
+                },
+                responses: {
+                    200: {
+                        description: "Solicitud exitosa",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    type: "object",
+                                    properties: {
+                                        success: {
+                                            type: "boolean",
+                                            example: true
+                                        },
+                                        msg: {
+                                            type: "string",
+                                            example: "Manage Task"
+                                        },
+                                        data: {
+                                            $ref: "#/components/schemas/Task"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    400: {
+                        description: "Solicitud incorrecta",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/task/cancelTask": {
+            put: {
+                tags: ["Tasks - Task"],
+                summary: "Cancelar una tarea",
+                description: "Cancela una tarea existente según su ID.",
+                operationId: "cancelTask",
+                requestBody: {
+                    content: {
+                        "application/json": {
+                            schema: {
+                                $ref: "#/components/schemas/CancelTask"
+                            }
+                        }
+                    }
+                },
+                responses: {
+                    200: {
+                        description: "Solicitud exitosa",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    type: "object",
+                                    properties: {
+                                        success: {
+                                            type: "boolean",
+                                            example: true
+                                        },
+                                        msg: {
+                                            type: "string",
+                                            example: "Cancel Task"
+                                        },
+                                        data: {
+                                            $ref: "#/components/schemas/Task"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    400: {
+                        description: "Solicitud incorrecta",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/task/completeTask": {
+            put: {
+                tags: ["Tasks - Task"],
+                summary: "Completar una tarea",
+                description: "Marca una tarea existente como completada según su ID.",
+                operationId: "completeTask",
+                requestBody: {
+                    content: {
+                        "application/json": {
+                            schema: {
+                                $ref: "#/components/schemas/CompleteTask"
+                            }
+                        }
+                    }
+                },
+                responses: {
+                    200: {
+                        description: "Solicitud exitosa",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    type: "object",
+                                    properties: {
+                                        success: {
+                                            type: "boolean",
+                                            example: true
+                                        },
+                                        msg: {
+                                            type: "string",
+                                            example: "Complete Task"
+                                        },
+                                        data: {
+                                            $ref: "#/components/schemas/Task"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    400: {
+                        description: "Solicitud incorrecta",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/task/reportTask": {
+            post: {
+                tags: ["Tasks - Task"],
+                summary: "Reportar una tarea",
+                description: "Reporta una tarea existente según su ID.",
+                operationId: "reportTask",
+                requestBody: {
+                    content: {
+                        "application/json": {
+                            schema: {
+                                $ref: "#/components/schemas/ReportTask"
+                            }
+                        }
+                    }
+                },
+                responses: {
+                    200: {
+                        description: "Solicitud exitosa",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    type: "object",
+                                    properties: {
+                                        success: {
+                                            type: "boolean",
+                                            example: true
+                                        },
+                                        msg: {
+                                            type: "string",
+                                            example: "Report Task"
+                                        },
+                                        data: {
+                                            $ref: "#/components/schemas/Task"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    400: {
+                        description: "Solicitud incorrecta",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/task/exportTasksToXLSX": {
+            post: {
+                tags: ["Tasks - Task"],
+                summary: "Exportar tareas a XLSX",
+                description: "Exporta información de tareas en formato XLSX dentro del rango de fechas especificado.",
+                operationId: "exportTasksToXLSX",
+                requestBody: {
+                    content: {
+                        "application/json": {
+                            schema: {
+                                $ref: "#/components/schemas/ExportTaskXLSX"
+                            }
+                        }
+                    }
+                },
+                responses: {
+                    200: {
+                        description: "Solicitud exitosa",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    type: "object",
+                                    properties: {
+                                        success: {
+                                            type: "boolean",
+                                            example: true
+                                        },
+                                        msg: {
+                                            type: "string",
+                                            example: "Iformacion obtenida correctamente"
+                                        },
+                                        data: {
+                                            type: "string",
+                                            example: "http://3.80.189.150:9000/api/task/tasksXlsxReport"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    400: {
+                        description: "Solicitud incorrecta",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/task/exportTasksToPDF": {
+            post: {
+                tags: ["Tasks - Task"],
+                summary: "Exportar tareas a PDF",
+                description: "Exporta información de tareas en formato PDF dentro del rango de fechas especificado.",
+                operationId: "exportTasksToPDF",
+                requestBody: {
+                    content: {
+                        "application/json": {
+                            schema: {
+                                $ref: "#/components/schemas/ExportTaskPDF"
+                            }
+                        }
+                    }
+                },
+                responses: {
+                    200: {
+                        description: "Solicitud exitosa",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    type: "object",
+                                    properties: {
+                                        success: {
+                                            type: "boolean",
+                                            example: true
+                                        },
+                                        msg: {
+                                            type: "string",
+                                            example: "Iformacion obtenida correctamente"
+                                        },
+                                        data: {
+                                            type: "string",
+                                            example: "http://3.80.189.150:9000/api/task/tasksPdfReport"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    400: {
+                        description: "Solicitud incorrecta",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/task/tasksXlsxReport": {
+            get: {
+                tags: ["Tasks - Task"],
+                summary: "Informe de tareas en formato XLSX",
+                description: "Genera un informe de tareas en formato XLSX.",
+                operationId: "tasksXlsxReport",
+                responses: {
+                    200: {
+                        description: "Solicitud exitosa",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    type: "string",
+                                    example: "Buffer data"
+                                }
+                            }
+                        }
+                    },
+                    500: {
+                        description: "Error del servidor",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/task/tasksPdfReport": {
+            get: {
+                tags: ["Tasks - Task"],
+                summary: "Informe de tareas en formato PDF",
+                description: "Genera un informe de tareas en formato PDF.",
+                operationId: "tasksPdfReport",
+                responses: {
+                    200: {
+                        description: "Solicitud exitosa",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    type: "string",
+                                    example: "Buffer data"
+                                }
+                            }
+                        }
+                    },
+                    500: {
+                        description: "Error del servidor",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 };
 exports.default = swaggerDefinition;
