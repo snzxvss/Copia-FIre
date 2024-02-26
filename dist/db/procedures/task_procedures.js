@@ -86,27 +86,21 @@ class TaskDbProcedures {
     ;
     getTasksByAgnetIdsProcedure(ids) {
         return __awaiter(this, void 0, void 0, function* () {
-            const isArray = Array.isArray(ids);
-            const arrayOfIds = [];
-            if (!isArray) {
-                arrayOfIds.push(ids);
-            }
-            else {
-                arrayOfIds.push(...ids);
-            }
-            ;
-            const [tasks] = yield this.db.query('CALL GetTasksDataByAgentId(:ids)', {
+            const agentData = Array.isArray(ids) ? { "agentIds": ids } : { "agentId": ids };
+            const [response] = yield this.db.query('CALL GetTasksDataByAgentId(:agentData)', {
                 replacements: {
-                    ids: JSON.stringify(arrayOfIds) || JSON.stringify([])
+                    agentData: JSON.stringify(agentData)
                 }
             });
-            if (!tasks.tasks)
-                tasks.tasks = [];
-            // if (tasks.tasks) tasks.tasks = tasks.tasks.length == 1 ? tasks.tasks[0] : tasks.tasks;
-            return tasks.tasks;
+            if (response && response.tasks) {
+                const tasks = JSON.parse(response.tasks);
+                return tasks;
+            }
+            else {
+                return [];
+            }
         });
     }
-    ;
     createTaskTypeExtinguisher(taskExtinguisher) {
         return __awaiter(this, void 0, void 0, function* () {
             const [response] = yield this.db.query('CALL CreateTaskExtinguisher(:taskExtinguisher)', {

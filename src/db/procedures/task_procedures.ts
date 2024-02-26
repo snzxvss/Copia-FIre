@@ -69,28 +69,24 @@ export class TaskDbProcedures {
 
         return tasks.tasks;
     };
+    
     public async getTasksByAgnetIdsProcedure(ids: Array<number> | number): Promise<Array<any> | any> {
-
-        const isArray = Array.isArray(ids);
-        const arrayOfIds = [];
-
-        if (!isArray) {
-            arrayOfIds.push(ids);
-        } else { arrayOfIds.push(...ids) };
-
-        const [tasks]: any = await this.db.query('CALL GetTasksDataByAgentId(:ids)', {
+        const agentData = Array.isArray(ids) ? { "agentIds": ids } : { "agentId": ids };
+        const [response] = await this.db.query('CALL GetTasksDataByAgentId(:agentData)', {
             replacements: {
-                ids: JSON.stringify(arrayOfIds) || JSON.stringify([])
+                agentData: JSON.stringify(agentData)
             }
-        }) as { tasks: Array<Task> | Task }[];
-        
-
-        if (!tasks.tasks) tasks.tasks = []
-
-        // if (tasks.tasks) tasks.tasks = tasks.tasks.length == 1 ? tasks.tasks[0] : tasks.tasks;
-
-        return tasks.tasks;
-    };
+        }) as { tasks: string }[];
+    
+        if (response && response.tasks) {
+            const tasks = JSON.parse(response.tasks);
+            return tasks;
+        } else {
+            return [];
+        }
+    }
+    
+    
 
     public async createTaskTypeExtinguisher(taskExtinguisher: TypeSizeExtinguisher): Promise<any> {
 
