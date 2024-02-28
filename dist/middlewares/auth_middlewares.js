@@ -77,7 +77,6 @@ exports.updateOrganizationMiddlewares = [
     validations_tokens_1.validateAccessToken,
     validations_users_1.userIsActive,
     (0, express_validator_1.check)("usuario").custom(validations_permissions_1.permissionModuleOrganization),
-    (0, express_validator_1.check)("organization_id").not().isEmpty().withMessage("El ID de la organización es obligatorio"), // SOLUCION
     (0, express_validator_1.check)("organization_city").optional().isString().withMessage("La ciudad debe ser un string").notEmpty().withMessage("La ciudad es obligatorio"),
     (0, express_validator_1.check)("organization_name").optional().isString().withMessage("El nombre debe ser un string").notEmpty().withMessage("El nombre es obligatorio"),
     (0, express_validator_1.check)("organization_email").optional().isEmail().withMessage("El email no es un email válido"),

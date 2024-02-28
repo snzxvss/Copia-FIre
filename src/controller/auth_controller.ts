@@ -307,7 +307,6 @@ export const updateOrganization = async (req: Request, res: Response) => {
 
     try {
         const {
-            organization_id,
             organization_city,
             organization_name,
             organization_email,
@@ -320,7 +319,6 @@ export const updateOrganization = async (req: Request, res: Response) => {
         } = req.body
 
         const data = {
-            organization_id,
             organization_city,
             organization_name,
             organization_email,
