@@ -280,9 +280,8 @@ const userInfo = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.userInfo = userInfo;
 const updateOrganization = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { organization_id, organization_city, organization_name, organization_email, organization_address, organization_license, organization_zip_code, organization_street_name, organization_license_aproval_date, organization_license_expiration_date, } = req.body;
+        const { organization_city, organization_name, organization_email, organization_address, organization_license, organization_zip_code, organization_street_name, organization_license_aproval_date, organization_license_expiration_date, } = req.body;
         const data = {
-            organization_id,
             organization_city,
             organization_name,
             organization_email,
