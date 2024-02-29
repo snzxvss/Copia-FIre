@@ -67,6 +67,6 @@ export const getTasksInfoMiddlewares: RequestHandler[] = [
 ]
 export const getTasksByAgentIdInfoMiddlewares: RequestHandler[] = [
     validateAccessToken,
-    check('agentId'),
+    check("assignedUser").notEmpty().withMessage("assignedUser es obligatorio"),
     validationChecks
 ]

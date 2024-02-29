@@ -115,6 +115,14 @@ export const exportClientsMiddlewares: RequestHandler[] = [
     check('finalDate').matches(/^([0-9]{1,4})(-|\/){1}((1[0-2])|(0?[1-9]))(-|\/)((1[0-9])|(2[0-9])|(3[0-1])|0?[1-9])$/).withMessage("La fecha no cumple el formato correcto 'AAAA-MM-DD'"),
     validationChecks
 ]
+
+export const getClientMiddewaresPdf: RequestHandler[] = [
+    validateAccessToken,
+    check('startDate').matches(/^([0-9]{1,4})(-|\/){1}((1[0-2])|(0?[1-9]))(-|\/)((1[0-9])|(2[0-9])|(3[0-1])|0?[1-9])$/).withMessage("La fecha no cumple el formato correcto 'AAAA-MM-DD'"),
+    check('finalDate').matches(/^([0-9]{1,4})(-|\/){1}((1[0-2])|(0?[1-9]))(-|\/)((1[0-9])|(2[0-9])|(3[0-1])|0?[1-9])$/).withMessage("La fecha no cumple el formato correcto 'AAAA-MM-DD'"),
+    validationChecks
+]
+
 export const exportClientDetailMiddlewares: RequestHandler[] = [
     validateAccessToken,
     check('clientId').custom(isValidClientId),

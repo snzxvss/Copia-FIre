@@ -5,7 +5,7 @@ const client_controller_1 = require("../controller/client_controller");
 const client_middlewares_1 = require("../middlewares/client_middlewares");
 const router = (0, express_1.Router)();
 router.post("/getClientInfo", client_middlewares_1.getClientInfoMiddewares, client_controller_1.getClientInfo);
-router.get("/clientsPdfReport", client_controller_1.clientsPdfReport);
+router.post("/clientsPdfReport", client_middlewares_1.getClientMiddewaresPdf, client_controller_1.clientsPdfReport);
 router.get("/clientsXlsxReport", client_controller_1.clientsXlsxReport);
 router.get("/clientDetailPdfReport", client_controller_1.ClientDetailPDF);
 router.get("/clientDetailXlsxReport", client_controller_1.ClientDetailXLSX);

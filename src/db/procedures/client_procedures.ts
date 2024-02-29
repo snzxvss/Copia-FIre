@@ -68,6 +68,18 @@ export class ClientDbProcedures {
         return clients.clients;
     }
 
+    public async GetClientsDataToReport(jsonFilter: { startDate: string, finalDate: string, searchKey: string }): Promise<Client[]> {
+        const { startDate, finalDate, searchKey } = jsonFilter;
+    
+        const [clients]: any = await this.db.query('CALL GetClientsDataToReport(:jsonFilter)', {
+            replacements: {
+                jsonFilter: JSON.stringify({ startDate, finalDate, searchKey })
+            }
+        }) as Client[];
+    
+        return clients;
+    }
+
     public async createClientContactProcedure(newClientContact: object): Promise<any> {
         const [response] = await this.db.query('CALL CreateClientContact(:newClientContact)', {
             replacements: {

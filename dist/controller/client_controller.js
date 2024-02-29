@@ -28,6 +28,7 @@ const file_to_export_service_1 = require("../services/file_to_export_service");
 const client_procedures_1 = require("../db/procedures/client_procedures");
 const moment_1 = __importDefault(require("moment"));
 const fs_1 = __importDefault(require("fs"));
+const axios_1 = __importDefault(require("axios"));
 const fileToExport = new file_to_export_service_1.FileToEexport;
 const clientDbProcedures = new client_procedures_1.ClientDbProcedures;
 const getClientInfo = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -322,22 +323,35 @@ const exportClientsToPDF = (req, res) => __awaiter(void 0, void 0, void 0, funct
 });
 exports.exportClientsToPDF = exportClientsToPDF;
 const clientsPdfReport = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { startDate, finalDate } = req.body;
-    const filePath = './src/temp/ClientReport.pdf';
-    const fechaFormateada = (0, moment_1.default)().format("DD-MM-YYYY");
-    // Lee el archivo en un buffer
-    fs_1.default.readFile(filePath, (err, data) => {
-        if (err) {
-            console.error(err);
-            res.status(500).json({ success: false, error: 'Error al leer el archivo.' });
-        }
-        else {
-            res.setHeader('Content-Disposition', `attachment; filename=${fechaFormateada}_CLIENT_REPORT.pdf`);
-            res.setHeader('Content-Type', 'application/pdf');
-            res.status(200).send(data);
-        }
-        ;
-    });
+    try {
+        const { startDate, finalDate } = req.body;
+        const data = { startDate, finalDate, searchKey: '' }; // Add the missing searchKey property
+        const [response] = yield clientDbProcedures.GetClientsDataToReport(data);
+        const fechaFormateada = (0, moment_1.default)().format("DD/MM/YYYY HH:mm:ss A");
+        console.log(`${fechaFormateada} - Clients Data Report Generated`);
+        // POST the response to "http://localhost:8080/pets"
+        yield axios_1.default.post('http://localhost:8080/pets', response);
+        // GET the PDF from "http://localhost:8080/pets/export-pdf"
+        const pdfResponse = yield axios_1.default.get('http://localhost:8080/pets/export-pdf', { responseType: 'arraybuffer' });
+        // Send the PDF as a response
+        res.setHeader('Content-Disposition', 'attachment; filename=report.pdf');
+        res.setHeader('Content-Type', 'application/pdf');
+        res.send(Buffer.from(pdfResponse.data, 'binary'));
+    }
+    catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            success: false,
+            errors: [
+                {
+                    msg: 'Error, comunicarse con el administrador',
+                    path: 'service',
+                    error
+                },
+            ],
+        });
+    }
+    ;
 });
 exports.clientsPdfReport = clientsPdfReport;
 const exportClientDetailToPDF = (req, res) => __awaiter(void 0, void 0, void 0, function* () {

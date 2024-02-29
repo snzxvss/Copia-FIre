@@ -7,13 +7,13 @@ import {
 import {
     createClientMiddlewares, updateClientMiddlewares,
     createClientContactMiddlewares, updateClientContactMiddlewares,
-    getClientInfoMiddewares, deleteClientcontactMiddlewares, createClientBuildingMiddlewares, updateClientBuildingMiddlewares, exportClientsMiddlewares, exportClientDetailMiddlewares
+    getClientInfoMiddewares, deleteClientcontactMiddlewares, createClientBuildingMiddlewares, updateClientBuildingMiddlewares, exportClientsMiddlewares, exportClientDetailMiddlewares, getClientMiddewaresPdf
 } from "../middlewares/client_middlewares";
 
 const router = Router();
 
 router.post("/getClientInfo", getClientInfoMiddewares, getClientInfo);
-router.get("/clientsPdfReport", clientsPdfReport);
+router.post("/clientsPdfReport", getClientMiddewaresPdf, clientsPdfReport);
 router.get("/clientsXlsxReport", clientsXlsxReport);
 router.get("/clientDetailPdfReport", ClientDetailPDF);
 router.get("/clientDetailXlsxReport", ClientDetailXLSX);

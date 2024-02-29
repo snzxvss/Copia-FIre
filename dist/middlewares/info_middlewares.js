@@ -59,7 +59,7 @@ exports.getTasksInfoMiddlewares = [
 ];
 exports.getTasksByAgentIdInfoMiddlewares = [
     validations_tokens_1.validateAccessToken,
-    (0, express_validator_1.check)('agentId'),
+    (0, express_validator_1.check)("assignedUser").notEmpty().withMessage("assignedUser es obligatorio"),
     validation_result_1.validationChecks
 ];
 //# sourceMappingURL=info_middlewares.js.map

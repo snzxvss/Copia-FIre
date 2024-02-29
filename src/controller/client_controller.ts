@@ -4,6 +4,7 @@ import { ClientDbProcedures } from "../db/procedures/client_procedures";
 import { Client } from "../interfaces/client_interface";
 import moment from "moment";
 import fs from 'fs';
+import axios from 'axios';
 import { User } from "../interfaces/user_interface";
 
 const fileToExport = new FileToEexport;
@@ -345,23 +346,41 @@ export const exportClientsToPDF = async (req: Request, res: Response) => {
         data: 'http://3.80.189.150:9000/api/client/clientsPdfReport'
     })
 };
+
+
 export const clientsPdfReport = async (req: Request, res: Response) => {
+    try {
+        const { startDate, finalDate } = req.body;
+        const data = { startDate, finalDate, searchKey: '' }; // Add the missing searchKey property
+        const [response] = await clientDbProcedures.GetClientsDataToReport(data);
+        const fechaFormateada = moment().format("DD/MM/YYYY HH:mm:ss A");
+        console.log(`${fechaFormateada} - Clients Data Report Generated`);
 
-    const { startDate, finalDate } = req.body;
-    const filePath = './src/temp/ClientReport.pdf';
-    const fechaFormateada = moment().format("DD-MM-YYYY");
+        // POST the response to "http://localhost:8080/pets"
+        await axios.post('http://localhost:8080/pets', response);
 
-    // Lee el archivo en un buffer
-    fs.readFile(filePath, (err, data) => {
-        if (err) {
-            console.error(err);
-            res.status(500).json({ success: false, error: 'Error al leer el archivo.' });
-        } else {
-            res.setHeader('Content-Disposition', `attachment; filename=${fechaFormateada}_CLIENT_REPORT.pdf`);
-            res.setHeader('Content-Type', 'application/pdf');
-            res.status(200).send(data);
-        };
-    });
+        // GET the PDF from "http://localhost:8080/pets/export-pdf"
+        const pdfResponse = await axios.get('http://localhost:8080/pets/export-pdf', { responseType: 'arraybuffer' });
+
+        // Send the PDF as a response
+        res.setHeader('Content-Disposition', 'attachment; filename=report.pdf');
+        res.setHeader('Content-Type', 'application/pdf');
+        res.send(Buffer.from(pdfResponse.data, 'binary'));
+
+    } catch (error) {
+        console.error(error);
+
+        return res.status(500).json({
+            success: false,
+            errors: [
+                {
+                    msg: 'Error, comunicarse con el administrador',
+                    path: 'service',
+                    error
+                },
+            ],
+        });
+    };
 };
 
 export const exportClientDetailToPDF = async (req: Request, res: Response) => {

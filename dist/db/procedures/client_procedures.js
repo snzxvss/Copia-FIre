@@ -81,6 +81,17 @@ class ClientDbProcedures {
             return clients.clients;
         });
     }
+    GetClientsDataToReport(jsonFilter) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { startDate, finalDate, searchKey } = jsonFilter;
+            const [clients] = yield this.db.query('CALL GetClientsDataToReport(:jsonFilter)', {
+                replacements: {
+                    jsonFilter: JSON.stringify({ startDate, finalDate, searchKey })
+                }
+            });
+            return clients;
+        });
+    }
     createClientContactProcedure(newClientContact) {
         return __awaiter(this, void 0, void 0, function* () {
             const [response] = yield this.db.query('CALL CreateClientContact(:newClientContact)', {

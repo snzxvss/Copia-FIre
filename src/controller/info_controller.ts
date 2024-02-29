@@ -245,6 +245,8 @@ export const getTasksInfo = async (req: Request, res: Response) => {
 
         const { status, success, msg, data } = await getInfo.getTasks(filters)
 
+        console.log("Data enviada: ", data);
+        
         res.status(status).json({
             success,
             msg,

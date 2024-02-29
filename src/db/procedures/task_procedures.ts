@@ -71,19 +71,21 @@ export class TaskDbProcedures {
     };
     
     public async getTasksByAgnetIdsProcedure(ids: Array<number> | number): Promise<Array<any> | any> {
-        const agentData = Array.isArray(ids) ? { "agentIds": ids } : { "agentId": ids };
-        const [response] = await this.db.query('CALL GetTasksDataByAgentId(:agentData)', {
+        const agentData = Array.isArray(ids) ? { "assignedUser": ids } : { "assignedUser": ids };
+        console.log(`Agent data: ${JSON.stringify(agentData)}`);
+        const response: any = await this.db.query('CALL GetTasksDataByAgentId(:agentData)', {
             replacements: {
                 agentData: JSON.stringify(agentData)
             }
-        }) as { tasks: string }[];
+        });
     
-        if (response && response.tasks) {
-            const tasks = JSON.parse(response.tasks);
-            return tasks;
-        } else {
-            return [];
+        let result = [];
+        if (response && response[0] && response[0].tasks) {
+            result = JSON.parse(response[0].tasks);
         }
+        console.log(`Response from database: ${JSON.stringify(result)}`);
+    
+        return result;
     }
     
     

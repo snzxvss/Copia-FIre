@@ -227,6 +227,7 @@ const getTasksInfo = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         const fechaFormateada = (0, moment_1.default)().format("DD/MM/YYYY HH:mm:ss A");
         console.log(`${fechaFormateada} - Informacion obtenida de las tareas - Username: ${usuario.userUsername}`);
         const { status, success, msg, data } = yield getInfo.getTasks(filters);
+        console.log("Data enviada: ", data);
         res.status(status).json({
             success,
             msg,
