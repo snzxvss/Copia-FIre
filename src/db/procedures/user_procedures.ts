@@ -136,4 +136,16 @@ export class UserDbProcedures {
 
         return response.response
     }
+
+    public async GetUsersDataToReport(jsonFilter: { startDate: string, finalDate: string, searchKey: string }): Promise<User[]> {
+        const { startDate, finalDate, searchKey } = jsonFilter;
+    
+        const [users]: any = await this.db.query('CALL GetUsersDataToReport(:jsonFilter)', {
+            replacements: {
+                jsonFilter: JSON.stringify({ startDate, finalDate, searchKey })
+            }
+        }) as User[];
+    
+        return users;
+    }
 }

@@ -110,4 +110,16 @@ export class TaskDbProcedures {
         }) as { tasks: Array<Task> }[];
         return response.response;
     };
+
+    public async GetTaskDataToReport(jsonFilter: { startDate: string, finalDate: string, searchKey: string }): Promise<Task[]> {
+        const { startDate, finalDate, searchKey } = jsonFilter;
+    
+        const [users]: any = await this.db.query('CALL GetTaskDataToReport(:jsonFilter)', {
+            replacements: {
+                jsonFilter: JSON.stringify({ startDate, finalDate, searchKey })
+            }
+        }) as Task[];
+    
+        return users;
+    }
 };

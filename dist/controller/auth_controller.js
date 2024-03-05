@@ -32,6 +32,7 @@ const S3Management_1 = require("../s3/S3Management");
 const fs_1 = __importDefault(require("fs"));
 const moment_1 = __importDefault(require("moment"));
 const organization_procedures_1 = require("../db/procedures/organization_procedures");
+const connection_1 = __importDefault(require("../db/connection"));
 const userDbProcedure = new user_procedures_1.UserDbProcedures;
 const organizationDbProcedures = new organization_procedures_1.OrganizationDbProcedures;
 const tokenService = new JWT_service_1.JWTService;
@@ -45,6 +46,8 @@ const authUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const equal = bcrypt_1.default.compareSync(password, userPassword);
         const fechaFormateada = (0, moment_1.default)().format("DD/MM/YYYY HH:mm:ss A");
         if (equal) {
+            // Call the GetExtinguisher stored procedure
+            const extinguisherData = yield connection_1.default.query('CALL GetExtinguisher()');
             const { status, success, msg, accessToken } = tokenService.generateJWT(user.userId, 'ACCESS_TOKEN');
             console.log(`${fechaFormateada} - Loggin correcto - Username: ${username}`);
             return res.status(status).json({
@@ -52,6 +55,7 @@ const authUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 msg,
                 accessToken,
                 data: user,
+                extinguisherData,
             });
         }
         else {

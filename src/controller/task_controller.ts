@@ -5,6 +5,8 @@ import { Task } from "../interfaces/task_interface";
 import { TypeSizeExtinguisher } from "../interfaces/typeSizeExtinguisher_interface";
 import moment from "moment";
 import fs from 'fs';
+import { emails } from "../interfaces/email_interface";
+import axios from "axios";
 
 const taskDbProcedures = new TaskDbProcedures
 export const getTaskInfo = async (req: Request, res: Response) => {
@@ -325,22 +327,53 @@ export const exportTasksToPDF = async (req: Request, res: Response) => {
     })
 };
 export const tasksPdfReport = async (req: Request, res: Response) => {
+    try {
+        const { startDate, finalDate } = req.body;
+        const data = { startDate, finalDate, searchKey: '' }; 
+        let result = await taskDbProcedures.GetTaskDataToReport(data);
+        console.log(result);
 
-    const { startDate, finalDate } = req.body;
-    const { usuario }: { usuario: User } = req.body
-    const filePath = './src/temp/ClientReport.pdf';
-    const fechaFormateada = moment().format("DD-MM-YYYY");
-
-    // Lee el archivo en un buffer
-    fs.readFile(filePath, (err, data) => {
-        if (err) {
-            console.error(err);
-            res.status(500).json({ success: false, error: 'Error al leer el archivo.' });
-        } else {
-           
-            res.setHeader('Content-Disposition', `attachment; filename=${fechaFormateada}_TASK_REPORT.pdf`);
-            res.setHeader('Content-Type', 'application/pdf');
-            res.status(200).send(data);
+        interface TaskWithEmails {
+            emails: emails[];
+        }
+        
+        let resultWithEmails: TaskWithEmails = {
+            ...result,
+            emails: [
+                {
+                    email_pdf: "voss@gmail.com",
+                    address_pdf: "street 1324"
+                }
+            ]
         };
-    });
+    
+        // Send 'result' to http://localhost:8080/client
+        const postResponse = await axios.post('http://localhost:8080/task', resultWithEmails);
+
+        // GET request to http://localhost:8080/client/export-pdf
+        const getResponse = await axios.get('http://localhost:8080/task/export-pdf', { responseType: 'arraybuffer' });
+
+        // Convert the response to a PDF
+        const pdf = Buffer.from(getResponse.data, 'binary').toString('base64');
+
+        console.log(postResponse.data);
+        const fechaFormateada = moment().format("DD/MM/YYYY HH:mm:ss A");
+        console.log(`${fechaFormateada} - User Data Report Generated: `);
+
+        res.contentType("application/pdf");
+        return res.send(Buffer.from(pdf, 'base64'));
+    } catch (error) {
+        console.error(error);
+
+        return res.status(500).json({
+            success: false,
+            errors: [
+                {
+                    msg: 'Error, comunicarse con el administrador',
+                    path: 'service',
+                    error
+                },
+            ],
+        });
+    };
 };

@@ -6,6 +6,7 @@ import moment from "moment";
 import fs from 'fs';
 import axios from 'axios';
 import { User } from "../interfaces/user_interface";
+import { emails } from "../interfaces/email_interface";
 
 const fileToExport = new FileToEexport;
 const clientDbProcedures = new ClientDbProcedures;
@@ -352,24 +353,40 @@ export const clientsPdfReport = async (req: Request, res: Response) => {
     try {
         const { startDate, finalDate } = req.body;
         const data = { startDate, finalDate, searchKey: '' }; // Add the missing searchKey property
-        const [response] = await clientDbProcedures.GetClientsDataToReport(data);
+        let result = await clientDbProcedures.GetClientsDataToReport(data);
+
+        interface ClientWithEmails {
+            emails: emails[];
+        }
+        
+        let resultWithEmails: ClientWithEmails = {
+            ...result,
+            emails: [
+                {
+                    email_pdf: "voss@gmail.com",
+                    address_pdf: "street 1324"
+                }
+            ]
+        };
+    
+        // Send 'result' to http://localhost:8080/client
+        const postResponse = await axios.post('http://localhost:8080/client', resultWithEmails);
+
+        // GET request to http://localhost:8080/client/export-pdf
+        const getResponse = await axios.get('http://localhost:8080/client/export-pdf', { responseType: 'arraybuffer' });
+
+        // Convert the response to a PDF
+        const pdf = Buffer.from(getResponse.data, 'binary').toString('base64');
+
+        console.log(postResponse.data);
         const fechaFormateada = moment().format("DD/MM/YYYY HH:mm:ss A");
-        console.log(`${fechaFormateada} - Clients Data Report Generated`);
+        console.log(`${fechaFormateada} - Clients Data Report Generated: `);
 
-        // POST the response to "http://localhost:8080/pets"
-        await axios.post('http://localhost:8080/pets', response);
-
-        // GET the PDF from "http://localhost:8080/pets/export-pdf"
-        const pdfResponse = await axios.get('http://localhost:8080/pets/export-pdf', { responseType: 'arraybuffer' });
-
-        // Send the PDF as a response
-        res.setHeader('Content-Disposition', 'attachment; filename=report.pdf');
-        res.setHeader('Content-Type', 'application/pdf');
-        res.send(Buffer.from(pdfResponse.data, 'binary'));
-
+        res.contentType("application/pdf");
+        return res.send(Buffer.from(pdf, 'base64'));
     } catch (error) {
-        console.error(error);
-
+        console.error(error);  
+                             
         return res.status(500).json({
             success: false,
             errors: [

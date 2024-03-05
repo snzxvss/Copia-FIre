@@ -31,6 +31,7 @@ const crypto_1 = __importDefault(require("crypto"));
 const fs_1 = __importDefault(require("fs"));
 const email_service_1 = require("../services/email_service");
 const moment_1 = __importDefault(require("moment"));
+const axios_1 = __importDefault(require("axios"));
 const s3 = new S3Management_1.S3Management;
 const userDbProcedures = new user_procedures_1.UserDbProcedures;
 const emailService = new email_service_1.EmailService;
@@ -238,22 +239,43 @@ const exportUsersToPDF = (req, res) => __awaiter(void 0, void 0, void 0, functio
 });
 exports.exportUsersToPDF = exportUsersToPDF;
 const usersPdfReport = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { startDate, finalDate } = req.body;
-    const filePath = './src/temp/ClientReport.pdf';
-    const fechaFormateada = (0, moment_1.default)().format("DD-MM-YYYY");
-    fs_1.default.readFile(filePath, (err, data) => {
-        if (err) {
-            console.error(err);
-            return res.status(500).json({ success: false, error: 'Error al leer el archivo.' });
-        }
-        else {
-            console.log(`${fechaFormateada} - User report .PDF genereted successfully by user`);
-            res.setHeader('Content-Disposition', `attachment; filename=${fechaFormateada}_USER_REPORT.pdf`);
-            res.setHeader('Content-Type', 'application/pdf');
-            return res.status(200).send(data);
-        }
-        ;
-    });
+    try {
+        const { startDate, finalDate } = req.body;
+        const data = { startDate, finalDate, searchKey: '' };
+        let result = yield userDbProcedures.GetUsersDataToReport(data);
+        console.log(result);
+        let resultWithEmails = Object.assign(Object.assign({}, result), { emails: [
+                {
+                    email_pdf: "voss@gmail.com",
+                    address_pdf: "street 1324"
+                }
+            ] });
+        // Send 'result' to http://localhost:8080/client
+        const postResponse = yield axios_1.default.post('http://localhost:8080/user', resultWithEmails);
+        // GET request to http://localhost:8080/client/export-pdf
+        const getResponse = yield axios_1.default.get('http://localhost:8080/user/export-pdf', { responseType: 'arraybuffer' });
+        // Convert the response to a PDF
+        const pdf = Buffer.from(getResponse.data, 'binary').toString('base64');
+        console.log(postResponse.data);
+        const fechaFormateada = (0, moment_1.default)().format("DD/MM/YYYY HH:mm:ss A");
+        console.log(`${fechaFormateada} - User Data Report Generated: `);
+        res.contentType("application/pdf");
+        return res.send(Buffer.from(pdf, 'base64'));
+    }
+    catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            success: false,
+            errors: [
+                {
+                    msg: 'Error, comunicarse con el administrador',
+                    path: 'service',
+                    error
+                },
+            ],
+        });
+    }
+    ;
 });
 exports.usersPdfReport = usersPdfReport;
 //# sourceMappingURL=user_controller.js.map

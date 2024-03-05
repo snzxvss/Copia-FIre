@@ -123,6 +123,17 @@ class TaskDbProcedures {
         });
     }
     ;
+    GetTaskDataToReport(jsonFilter) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { startDate, finalDate, searchKey } = jsonFilter;
+            const [users] = yield this.db.query('CALL GetTaskDataToReport(:jsonFilter)', {
+                replacements: {
+                    jsonFilter: JSON.stringify({ startDate, finalDate, searchKey })
+                }
+            });
+            return users;
+        });
+    }
 }
 exports.TaskDbProcedures = TaskDbProcedures;
 ;

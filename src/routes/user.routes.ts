@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { alternateUser, createUser, exportUsersToPDF, exportUsersToXLSX, getUserInfo, updateUser, usersPdfReport, usersXlsxReport,  } from '../controller/user_controller';
-import { updateUserMiddlewares, createUserMiddlewares, getUserInfoMiddlewares, exportUsersMiddlewares, alternateUserMiddlewares } from "../middlewares/user_middlewares";
+import { updateUserMiddlewares, createUserMiddlewares, getUserInfoMiddlewares, exportUsersMiddlewares, alternateUserMiddlewares, getUserMiddewaresPdf } from "../middlewares/user_middlewares";
 
 const router = Router();
 
@@ -9,8 +9,8 @@ router.post("/getUserInfo", getUserInfoMiddlewares, getUserInfo);
 router.post("/exportUsersToPDF", exportUsersMiddlewares, exportUsersToPDF);
 router.post("/exportUsersToXLSX", exportUsersMiddlewares, exportUsersToXLSX);
 
-router.get("/usersPdfReport", usersPdfReport);
-router.get("/usersXlsxReport", usersXlsxReport);
+router.post("/usersPdfReport", getUserMiddewaresPdf, usersPdfReport);
+router.post("/usersXlsxReport", usersXlsxReport);
 
 router.post("/createUser", createUserMiddlewares, createUser);
 

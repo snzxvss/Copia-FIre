@@ -6,8 +6,8 @@ import { assignTaskMiddlewares, cancelTaskIMiddlewares, completeTaskIMiddlewares
 
 const router = Router();
 router.post("/getTaskInfo", getTaskInfoMiddlewares, getTaskInfo);
-router.get("/tasksPdfReport", tasksPdfReport);
-router.get("/tasksXlsxReport", tasksXlsxReport);
+router.post("/tasksPdfReport", exportTasksMiddlewares, tasksPdfReport);
+router.post("/tasksXlsxReport", exportTasksMiddlewares, tasksXlsxReport);
 
 router.post("/exportTasksToPDF", exportTasksMiddlewares, exportTasksToPDF);
 router.post("/exportTasksToXLSX", exportTasksMiddlewares, exportTasksToXLSX);

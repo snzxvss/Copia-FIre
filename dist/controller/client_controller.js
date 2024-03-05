@@ -326,17 +326,24 @@ const clientsPdfReport = (req, res) => __awaiter(void 0, void 0, void 0, functio
     try {
         const { startDate, finalDate } = req.body;
         const data = { startDate, finalDate, searchKey: '' }; // Add the missing searchKey property
-        const [response] = yield clientDbProcedures.GetClientsDataToReport(data);
+        let result = yield clientDbProcedures.GetClientsDataToReport(data);
+        let resultWithEmails = Object.assign(Object.assign({}, result), { emails: [
+                {
+                    email_pdf: "voss@gmail.com",
+                    address_pdf: "street 1324"
+                }
+            ] });
+        // Send 'result' to http://localhost:8080/client
+        const postResponse = yield axios_1.default.post('http://localhost:8080/client', resultWithEmails);
+        // GET request to http://localhost:8080/client/export-pdf
+        const getResponse = yield axios_1.default.get('http://localhost:8080/client/export-pdf', { responseType: 'arraybuffer' });
+        // Convert the response to a PDF
+        const pdf = Buffer.from(getResponse.data, 'binary').toString('base64');
+        console.log(postResponse.data);
         const fechaFormateada = (0, moment_1.default)().format("DD/MM/YYYY HH:mm:ss A");
-        console.log(`${fechaFormateada} - Clients Data Report Generated`);
-        // POST the response to "http://localhost:8080/pets"
-        yield axios_1.default.post('http://localhost:8080/pets', response);
-        // GET the PDF from "http://localhost:8080/pets/export-pdf"
-        const pdfResponse = yield axios_1.default.get('http://localhost:8080/pets/export-pdf', { responseType: 'arraybuffer' });
-        // Send the PDF as a response
-        res.setHeader('Content-Disposition', 'attachment; filename=report.pdf');
-        res.setHeader('Content-Type', 'application/pdf');
-        res.send(Buffer.from(pdfResponse.data, 'binary'));
+        console.log(`${fechaFormateada} - Clients Data Report Generated: `);
+        res.contentType("application/pdf");
+        return res.send(Buffer.from(pdf, 'base64'));
     }
     catch (error) {
         console.error(error);

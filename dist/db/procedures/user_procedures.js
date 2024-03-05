@@ -137,6 +137,17 @@ class UserDbProcedures {
             return response.response;
         });
     }
+    GetUsersDataToReport(jsonFilter) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { startDate, finalDate, searchKey } = jsonFilter;
+            const [users] = yield this.db.query('CALL GetUsersDataToReport(:jsonFilter)', {
+                replacements: {
+                    jsonFilter: JSON.stringify({ startDate, finalDate, searchKey })
+                }
+            });
+            return users;
+        });
+    }
 }
 exports.UserDbProcedures = UserDbProcedures;
 //# sourceMappingURL=user_procedures.js.map

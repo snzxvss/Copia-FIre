@@ -10,6 +10,7 @@ import fs from 'fs'
 import { Data } from "../interfaces/s3_data_interface";
 import moment from "moment";
 import { OrganizationDbProcedures } from "../db/procedures/organization_procedures";
+import db from "../db/connection";
 
 const userDbProcedure = new UserDbProcedures;
 const organizationDbProcedures = new OrganizationDbProcedures
@@ -18,16 +19,19 @@ const emailService = new EmailService;
 const s3 = new S3Management()
 
 export const authUser = async (req: Request, res: Response) => {
+    
+
     const { username, password, usuario } = req.body;
     const { userPassword, ...user }: User = usuario;
 
     try {
-
         const hashed = bcrypt.hashSync(password, 10);
         const equal = bcrypt.compareSync(password, userPassword!);
         const fechaFormateada = moment().format("DD/MM/YYYY HH:mm:ss A");
 
         if (equal) {
+            // Call the GetExtinguisher stored procedure
+            const extinguisherData = await db.query('CALL GetExtinguisher()');
 
             const { status, success, msg, accessToken }: ResponseInterface = tokenService.generateJWT(user.userId, 'ACCESS_TOKEN');
             console.log(`${fechaFormateada} - Loggin correcto - Username: ${username}`);
@@ -37,10 +41,10 @@ export const authUser = async (req: Request, res: Response) => {
                 msg,
                 accessToken,
                 data: user,
+                extinguisherData, 
             });
 
         } else {
-
             console.log(`${fechaFormateada} - Contraseña incorrecta - username: ${username}`);
 
             return res.status(401).json({
