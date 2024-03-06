@@ -325,7 +325,7 @@ exports.exportClientsToPDF = exportClientsToPDF;
 const clientsPdfReport = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { startDate, finalDate } = req.body;
-        const data = { startDate, finalDate, searchKey: '' }; // Add the missing searchKey property
+        const data = { startDate, finalDate, searchKey: '' };
         let result = yield clientDbProcedures.GetClientsDataToReport(data);
         let resultWithEmails = Object.assign(Object.assign({}, result), { emails: [
                 {

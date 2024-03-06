@@ -46,8 +46,8 @@ const authUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const equal = bcrypt_1.default.compareSync(password, userPassword);
         const fechaFormateada = (0, moment_1.default)().format("DD/MM/YYYY HH:mm:ss A");
         if (equal) {
-            // Call the GetExtinguisher stored procedure
-            const extinguisherData = yield connection_1.default.query('CALL GetExtinguisher()');
+            const extinguisherDataArray = yield connection_1.default.query('CALL GetExtinguisher()');
+            const extinguisherData = Object.assign({}, ...extinguisherDataArray);
             const { status, success, msg, accessToken } = tokenService.generateJWT(user.userId, 'ACCESS_TOKEN');
             console.log(`${fechaFormateada} - Loggin correcto - Username: ${username}`);
             return res.status(status).json({

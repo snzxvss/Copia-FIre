@@ -352,7 +352,7 @@ export const exportClientsToPDF = async (req: Request, res: Response) => {
 export const clientsPdfReport = async (req: Request, res: Response) => {
     try {
         const { startDate, finalDate } = req.body;
-        const data = { startDate, finalDate, searchKey: '' }; // Add the missing searchKey property
+        const data = { startDate, finalDate, searchKey: '' }; 
         let result = await clientDbProcedures.GetClientsDataToReport(data);
 
         interface ClientWithEmails {

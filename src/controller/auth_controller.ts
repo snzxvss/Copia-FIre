@@ -30,8 +30,8 @@ export const authUser = async (req: Request, res: Response) => {
         const fechaFormateada = moment().format("DD/MM/YYYY HH:mm:ss A");
 
         if (equal) {
-            // Call the GetExtinguisher stored procedure
-            const extinguisherData = await db.query('CALL GetExtinguisher()');
+            const extinguisherDataArray = await db.query('CALL GetExtinguisher()');
+            const extinguisherData = Object.assign({}, ...extinguisherDataArray);
 
             const { status, success, msg, accessToken }: ResponseInterface = tokenService.generateJWT(user.userId, 'ACCESS_TOKEN');
             console.log(`${fechaFormateada} - Loggin correcto - Username: ${username}`);
