@@ -288,23 +288,10 @@ const tasksXlsxReport = (req, res) => __awaiter(void 0, void 0, void 0, function
 });
 exports.tasksXlsxReport = tasksXlsxReport;
 const exportTasksToPDF = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { startDate, finalDate } = req.body;
-    const { usuario } = req.body;
-    const filePath = './src/temp/ClientReport.pdf';
-    const fechaFormateada = (0, moment_1.default)().format("DD-MM-YYYY");
-    // Lee el archivo en un buffer
-    res.status(200).json({
-        success: true,
-        msg: "Iformacion obtenida correctamente",
-        data: 'http://3.80.189.150:9000/api/task/tasksPdfReport'
-    });
-});
-exports.exportTasksToPDF = exportTasksToPDF;
-const tasksPdfReport = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { startDate, finalDate } = req.body;
         const data = { startDate, finalDate, searchKey: '' };
-        let result = yield taskDbProcedures.GetTaskDataToReport(data);
+        let result = yield taskDbProcedures.GetTaskDataToTask(data);
         console.log(result);
         let resultWithEmails = Object.assign(Object.assign({}, result), { emails: [
                 {
@@ -316,6 +303,46 @@ const tasksPdfReport = (req, res) => __awaiter(void 0, void 0, void 0, function*
         const postResponse = yield axios_1.default.post('http://localhost:8080/task', resultWithEmails);
         // GET request to http://localhost:8080/client/export-pdf
         const getResponse = yield axios_1.default.get('http://localhost:8080/task/export-pdf', { responseType: 'arraybuffer' });
+        // Convert the response to a PDF
+        const pdf = Buffer.from(getResponse.data, 'binary').toString('base64');
+        console.log(postResponse.data);
+        const fechaFormateada = (0, moment_1.default)().format("DD/MM/YYYY HH:mm:ss A");
+        console.log(`${fechaFormateada} - User Data Report Generated: `);
+        res.contentType("application/pdf");
+        return res.send(Buffer.from(pdf, 'base64'));
+    }
+    catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            success: false,
+            errors: [
+                {
+                    msg: 'Error, comunicarse con el administrador',
+                    path: 'service',
+                    error
+                },
+            ],
+        });
+    }
+    ;
+});
+exports.exportTasksToPDF = exportTasksToPDF;
+const tasksPdfReport = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { startDate, finalDate } = req.body;
+        const data = { startDate, finalDate, searchKey: '' };
+        let result = yield taskDbProcedures.GetTaskDataReport(data);
+        console.log(result);
+        let resultWithEmails = Object.assign(Object.assign({}, result), { emails: [
+                {
+                    email_pdf: "voss@gmail.com",
+                    address_pdf: "street 1324"
+                }
+            ] });
+        // Send 'result' to http://localhost:8080/client
+        const postResponse = yield axios_1.default.post('http://localhost:8080/report', resultWithEmails);
+        // GET request to http://localhost:8080/client/export-pdf
+        const getResponse = yield axios_1.default.get('http://localhost:8080/report/export-pdf', { responseType: 'arraybuffer' });
         // Convert the response to a PDF
         const pdf = Buffer.from(getResponse.data, 'binary').toString('base64');
         console.log(postResponse.data);

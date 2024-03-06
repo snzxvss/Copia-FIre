@@ -22,4 +22,6 @@ export interface Task {
     taskStartRechargedExtinguisherCount: number;
     taskEndNewExtinguisherCount: number;
     taskEndRechargedExtinguisherCount: number;
+    extinguisherType: number; // Agregar esta propiedad para el tipo de extintor
+    extinguisherSize: number; // Agregar esta propiedad para el tamaño del extintor
 }

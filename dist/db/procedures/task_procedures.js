@@ -123,10 +123,21 @@ class TaskDbProcedures {
         });
     }
     ;
-    GetTaskDataToReport(jsonFilter) {
+    GetTaskDataToTask(jsonFilter) {
         return __awaiter(this, void 0, void 0, function* () {
             const { startDate, finalDate, searchKey } = jsonFilter;
-            const [users] = yield this.db.query('CALL GetTaskDataToReport(:jsonFilter)', {
+            const [users] = yield this.db.query('CALL GetTaskDataToTask(:jsonFilter)', {
+                replacements: {
+                    jsonFilter: JSON.stringify({ startDate, finalDate, searchKey })
+                }
+            });
+            return users;
+        });
+    }
+    GetTaskDataReport(jsonFilter) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { startDate, finalDate, searchKey } = jsonFilter;
+            const [users] = yield this.db.query('CALL GetTaskDataReport(:jsonFilter)', {
                 replacements: {
                     jsonFilter: JSON.stringify({ startDate, finalDate, searchKey })
                 }

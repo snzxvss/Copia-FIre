@@ -111,10 +111,10 @@ export class TaskDbProcedures {
         return response.response;
     };
 
-    public async GetTaskDataToReport(jsonFilter: { startDate: string, finalDate: string, searchKey: string }): Promise<Task[]> {
+    public async GetTaskDataToTask(jsonFilter: { startDate: string, finalDate: string, searchKey: string }): Promise<Task[]> {
         const { startDate, finalDate, searchKey } = jsonFilter;
     
-        const [users]: any = await this.db.query('CALL GetTaskDataToReport(:jsonFilter)', {
+        const [users]: any = await this.db.query('CALL GetTaskDataToTask(:jsonFilter)', {
             replacements: {
                 jsonFilter: JSON.stringify({ startDate, finalDate, searchKey })
             }
@@ -122,4 +122,17 @@ export class TaskDbProcedures {
     
         return users;
     }
+
+    public async GetTaskDataReport(jsonFilter: { startDate: string, finalDate: string, searchKey: string }): Promise<Task[]> {
+        const { startDate, finalDate, searchKey } = jsonFilter;
+    
+        const [users]: any = await this.db.query('CALL GetTaskDataReport(:jsonFilter)', {
+            replacements: {
+                jsonFilter: JSON.stringify({ startDate, finalDate, searchKey })
+            }
+        }) as Task[];
+    
+        return users;
+    }
+    
 };
