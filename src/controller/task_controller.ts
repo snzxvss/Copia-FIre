@@ -65,15 +65,15 @@ export const createTask = async (req: Request, res: Response) => {
             taskExtinguishers.forEach(async (taskExtinguisher) => {
 
                 let { isNewPFE, isService } = taskExtinguisher;
-                if (isNewPFE) isService = !isNewPFE;
-                if (isService) isNewPFE = !isService;
+                if (isNewPFE) isService = 1 - isNewPFE;
+                if (isService) isNewPFE = 1 - isService;
 
                 await taskDbProcedures.createTaskTypeExtinguisher({
                     taskId,
-                    createdInTask: true,
+                    createdInTask: 1,
                     extinguisherTypeId: taskExtinguisher.extinguisherTypeId,
                     extinguisherSizeId: taskExtinguisher.extinguisherSizeId,
-                    createdInMangement: false,
+                    createdInMangement: 0,
                     isNewPFE,
                     isService
                 });

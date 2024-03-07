@@ -72,7 +72,7 @@ const isValidToAssign = (state, { req }) => __awaiter(void 0, void 0, void 0, fu
     const { task } = req.body;
     const invalidValue = ['Creada', 'Asignada'];
     if (!invalidValue.includes(task.taskState))
-        throw new Error(`No se puede completar la tarea.`);
+        throw new Error(`No se puede asignar la tarea.`);
 });
 exports.isValidToAssign = isValidToAssign;
 const isValidToComplete = (state, { req }) => __awaiter(void 0, void 0, void 0, function* () {

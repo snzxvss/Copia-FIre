@@ -62,15 +62,15 @@ const createTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             taskExtinguishers.forEach((taskExtinguisher) => __awaiter(void 0, void 0, void 0, function* () {
                 let { isNewPFE, isService } = taskExtinguisher;
                 if (isNewPFE)
-                    isService = !isNewPFE;
+                    isService = 1 - isNewPFE;
                 if (isService)
-                    isNewPFE = !isService;
+                    isNewPFE = 1 - isService;
                 yield taskDbProcedures.createTaskTypeExtinguisher({
                     taskId,
-                    createdInTask: true,
+                    createdInTask: 1,
                     extinguisherTypeId: taskExtinguisher.extinguisherTypeId,
                     extinguisherSizeId: taskExtinguisher.extinguisherSizeId,
-                    createdInMangement: false,
+                    createdInMangement: 0,
                     isNewPFE,
                     isService
                 });

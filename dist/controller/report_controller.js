@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.reportsXlsxReport = exports.exportReportsToXLSX = exports.reportsPdfReport = exports.exportReportsToPDF = void 0;
+exports.report = exports.reportsXlsxReport = exports.exportReportsToXLSX = exports.reportsPdfReport = exports.exportReportsToPDF = void 0;
 const moment_1 = __importDefault(require("moment"));
 const fs_1 = __importDefault(require("fs"));
 const exportReportsToPDF = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -77,4 +77,14 @@ const reportsXlsxReport = (req, res) => __awaiter(void 0, void 0, void 0, functi
     });
 });
 exports.reportsXlsxReport = reportsXlsxReport;
+const report = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { startDate, finalDate } = req.body;
+    const { usuario } = req.body;
+    res.status(200).json({
+        success: true,
+        msg: "Iformacion obtenida correctamente",
+        data: 'http://example.com'
+    });
+});
+exports.report = report;
 //# sourceMappingURL=report_controller.js.map

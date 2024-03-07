@@ -65,7 +65,7 @@ export const isValidToEditTask: any = async (state: string, { req }: { req: Requ
 export const isValidToAssign: any = async (state: string, { req }: { req: Request }) => {
     const { task }: { task: Task } = req.body;
     const invalidValue = ['Creada', 'Asignada'];
-    if (!invalidValue.includes(task.taskState)) throw new Error(`No se puede completar la tarea.`)
+    if (!invalidValue.includes(task.taskState)) throw new Error(`No se puede asignar la tarea.`)
 }
 export const isValidToComplete: any = async (state: string, { req }: { req: Request }) => {
     const { task }: { task: Task } = req.body;

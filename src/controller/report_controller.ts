@@ -77,3 +77,14 @@ export const reportsXlsxReport = async (req: Request, res: Response) => {
     });
 };
 
+export const report = async (req: Request, res: Response) => {
+    
+        const { startDate, finalDate } = req.body;
+        const { usuario }: { usuario: User } = req.body
+    
+        res.status(200).json({
+            success:true,
+            msg:"Iformacion obtenida correctamente",
+            data:'http://example.com'
+        });
+};

@@ -1,9 +1,9 @@
 export interface TypeSizeExtinguisher {
     taskId: number;
-    createdInTask?: boolean;
+    createdInTask?: number;
     extinguisherTypeId: number;
     extinguisherSizeId: number;
-    createdInMangement?: boolean;
-    isNewPFE?: boolean;
-    isService?: boolean;
+    createdInMangement?: number;
+    isNewPFE?: number;
+    isService?: number;
 }
