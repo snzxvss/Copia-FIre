@@ -72,21 +72,27 @@ export class TaskDbProcedures {
     
     public async getTasksByAgnetIdsProcedure(ids: Array<number> | number): Promise<Array<any> | any> {
         const agentData = Array.isArray(ids) ? { "assignedUser": ids } : { "assignedUser": ids };
-        console.log(`Agent data: ${JSON.stringify(agentData)}`);
-        const response: any = await this.db.query('CALL GetTasksDataByAgentId(:agentData)', {
-            replacements: {
-                agentData: JSON.stringify(agentData)
+    
+        console.log(`Datos del agente: ${JSON.stringify(agentData)}`);
+    
+        try {
+            const response: any = await this.db.query('CALL GetTasksDataByAgentId(:agentData)', {
+                replacements: {
+                    agentData: JSON.stringify(agentData)
+                }
+            });
+    
+            if (response && response[0] && response[0].tasks) {
+                return response[0].tasks; // Devolver la respuesta directamente si ya es un objeto
+            } else {
+                return []; // Devolver un array vacío si no hay tareas
             }
-        });
-    
-        let result = [];
-        if (response && response[0] && response[0].tasks) {
-            result = JSON.parse(response[0].tasks);
+        } catch (error) {
+            console.error(error);
+            return []; // Devolver un array vacío en caso de error
         }
-        console.log(`Response from database: ${JSON.stringify(result)}`);
-    
-        return result;
     }
+    
     
     
 

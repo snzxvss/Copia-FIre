@@ -157,9 +157,9 @@ export class GetInfoService {
             const tasks = await taskDbProcedures.getTasksByAgnetIdsProcedure(ids);
             
             return { status: 200, success: true, msg: `Tasks obtenidos correctamente`, data: tasks };
-
+    
         } catch (error) {
-
+    
             console.log(error);
             return { status: 500, success: false, msg: `Error al obtener la informacion` };
             

@@ -9,8 +9,8 @@ router.post("/getUserInfo", getUserInfoMiddlewares, getUserInfo);
 router.post("/exportUsersToPDF", exportUsersMiddlewares, exportUsersToPDF);
 router.post("/exportUsersToXLSX", exportUsersMiddlewares, exportUsersToXLSX);
 
-router.post("/usersPdfReport", getUserMiddewaresPdf, usersPdfReport);
-router.post("/usersXlsxReport", usersXlsxReport);
+router.post("/usersPdfReport", exportUsersMiddlewares, usersPdfReport);
+router.post("/usersXlsxReport", exportUsersMiddlewares, usersXlsxReport);
 
 router.post("/createUser", createUserMiddlewares, createUser);
 

@@ -13,8 +13,8 @@ import {
 const router = Router();
 
 router.post("/getClientInfo", getClientInfoMiddewares, getClientInfo);
-router.post("/clientsPdfReport", getClientMiddewaresPdf, clientsPdfReport);
-router.get("/clientsXlsxReport", clientsXlsxReport);
+router.post("/clientsPdfReport", exportClientsMiddlewares, clientsPdfReport);
+router.post("/clientsXlsxReport", exportClientsMiddlewares, clientsXlsxReport);
 router.get("/clientDetailPdfReport", ClientDetailPDF);
 router.get("/clientDetailXlsxReport", ClientDetailXLSX);
 

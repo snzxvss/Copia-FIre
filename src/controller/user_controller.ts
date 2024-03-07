@@ -231,23 +231,55 @@ export const exportUsersToXLSX = async (req: Request, res: Response) => {
 };
 
 export const usersXlsxReport = async (req: Request, res: Response) => {
-    const { startDate, finalDate } = req.body;
-
-    const filePath = './src/temp/ClientReport.xlsx';
-    const fechaFormateada = moment().format("DD-MM-YYYY");
-
-    // Lee el archivo en un buffer
-    fs.readFile(filePath, (err, data) => {
-        if (err) {
-            console.error(err);
-            return res.status(500).json({ success: false, error: 'Error al leer el archivo.' });
-        } else {
-            console.log(`${fechaFormateada} - Users report .XLSX genereted successfully by user`);
-            res.setHeader('Content-Disposition', `attachment; filename=${fechaFormateada}_USER_REPORT.xlsx`);
-            res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-            return res.status(200).send(data);
+    try {
+        const { startDate, finalDate } = req.body;
+        const data = { startDate, finalDate, searchKey: '' }; 
+        let result = await userDbProcedures.GetUsersDataToReport(data);
+        console.log(result);
+    
+        interface TaskWithEmails {
+            emails: emails[];
+        }
+        
+        let resultWithEmails: TaskWithEmails = {
+            ...result,
+            emails: [
+                {
+                    email_pdf: "voss@gmail.com",
+                    address_pdf: "street 1324"
+                }
+            ]
         };
-    });
+    
+        // Send 'result' to http://localhost:8080/task
+        const postResponse = await axios.post('http://localhost:8080/user', resultWithEmails);
+    
+        // GET request to http://localhost:8080/task/export-pdf
+        const getResponse = await axios.get('http://localhost:8080/user/export-xls', { responseType: 'arraybuffer' });
+    
+        // Convert the response to a XLS
+        const xls = Buffer.from(getResponse.data, 'binary').toString('base64');
+    
+        console.log(postResponse.data);
+        const fechaFormateada = moment().format("DD/MM/YYYY HH:mm:ss A");
+        console.log(`${fechaFormateada} - User Data User Generated: `);
+    
+        res.contentType("application/vnd.ms-excel");
+        return res.send(Buffer.from(xls, 'base64'));
+    } catch (error) {
+        console.error(error);
+    
+        return res.status(500).json({
+            success: false,
+            errors: [
+                {
+                    msg: 'Error, comunicarse con el administrador',
+                    path: 'service',
+                    error
+                },
+            ],
+        });
+    };
 
 };
 export const exportUsersToPDF = async (req: Request, res: Response) => {

@@ -7,6 +7,7 @@ import moment from "moment";
 import fs from 'fs';
 import { emails } from "../interfaces/email_interface";
 import axios from "axios";
+import { Workbook } from "exceljs";
 
 const taskDbProcedures = new TaskDbProcedures
 export const getTaskInfo = async (req: Request, res: Response) => {
@@ -276,39 +277,106 @@ export const reportTask = async (req: Request, res: Response) => {
 }
 
 export const exportTasksToXLSX = async (req: Request, res: Response) => {
-
-
-    const { startDate, finalDate } = req.body;
-    const { usuario }: { usuario: User } = req.body
-
-    const filePath = './src/temp/ClientReport.xlsx';
-    const fechaFormateada = moment().format("DD-MM-YYYY");
-
-    // Lee el archivo en un buffer
-    res.status(200).json({
-        success: true,
-        msg: "Iformacion obtenida correctamente",
-        data: 'http://3.80.189.150:9000/api/task/tasksXlsxReport'
-    })
+    try {
+        const { startDate, finalDate } = req.body;
+        const data = { startDate, finalDate, searchKey: '' }; 
+        let result = await taskDbProcedures.GetTaskDataToTask(data);
+        console.log(result);
+    
+        interface TaskWithEmails {
+            emails: emails[];
+        }
+        
+        let resultWithEmails: TaskWithEmails = {
+            ...result,
+            emails: [
+                {
+                    email_pdf: "voss@gmail.com",
+                    address_pdf: "street 1324"
+                }
+            ]
+        };
+    
+        // Send 'result' to http://localhost:8080/client
+        const postResponse = await axios.post('http://localhost:8080/task', resultWithEmails);
+    
+        // GET request to http://localhost:8080/client/export-pdf
+        const getResponse = await axios.get('http://localhost:8080/task/export-xls', { responseType: 'arraybuffer' });
+    
+        // Convert the response to a XLS
+        const xls = Buffer.from(getResponse.data, 'binary').toString('base64');
+    
+        console.log(postResponse.data);
+        const fechaFormateada = moment().format("DD/MM/YYYY HH:mm:ss A");
+        console.log(`${fechaFormateada} - User Data Report Generated: `);
+    
+        res.contentType("application/vnd.ms-excel");
+        return res.send(Buffer.from(xls, 'base64'));
+    } catch (error) {
+        console.error(error);
+    
+        return res.status(500).json({
+            success: false,
+            errors: [
+                {
+                    msg: 'Error, comunicarse con el administrador',
+                    path: 'service',
+                    error
+                },
+            ],
+        });
+    };
 };
 export const tasksXlsxReport = async (req: Request, res: Response) => {
-
-
-    const { startDate, finalDate } = req.body;
-
-    const filePath = './src/temp/ClientReport.xlsx';
-    const fechaFormateada = moment().format("DD-MM-YYYY");
-
-    fs.readFile(filePath, (err, data) => {
-        if (err) {
-            console.error(err);
-            res.status(500).json({ success: false, error: 'Error al leer el archivo.' });
-        } else {
-            res.setHeader('Content-Disposition', `attachment; filename=${fechaFormateada}_TASK_REPORT.xlsx`);
-            res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-            res.status(200).send(data);
+    try {
+        const { startDate, finalDate } = req.body;
+        const data = { startDate, finalDate, searchKey: '' }; 
+        let result = await taskDbProcedures.GetTaskDataReport(data);
+        console.log(result);
+    
+        interface TaskWithEmails {
+            emails: emails[];
+        }
+        
+        let resultWithEmails: TaskWithEmails = {
+            ...result,
+            emails: [
+                {
+                    email_pdf: "voss@gmail.com",
+                    address_pdf: "street 1324"
+                }
+            ]
         };
-    });
+    
+        // Send 'result' to http://localhost:8080/task
+        const postResponse = await axios.post('http://localhost:8080/report', resultWithEmails);
+    
+        // GET request to http://localhost:8080/task/export-pdf
+        const getResponse = await axios.get('http://localhost:8080/report/export-xls', { responseType: 'arraybuffer' });
+    
+        // Convert the response to a XLS
+        const xls = Buffer.from(getResponse.data, 'binary').toString('base64');
+    
+        console.log(postResponse.data);
+        const fechaFormateada = moment().format("DD/MM/YYYY HH:mm:ss A");
+        console.log(`${fechaFormateada} - User Data Report Generated: `);
+    
+        res.contentType("application/vnd.ms-excel");
+        return res.send(Buffer.from(xls, 'base64'));
+    } catch (error) {
+        console.error(error);
+    
+        return res.status(500).json({
+            success: false,
+            errors: [
+                {
+                    msg: 'Error, comunicarse con el administrador',
+                    path: 'service',
+                    error
+                },
+            ],
+        });
+    };
 };
 
 export const exportTasksToPDF = async (req: Request, res: Response) => {

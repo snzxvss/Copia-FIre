@@ -87,18 +87,24 @@ class TaskDbProcedures {
     getTasksByAgnetIdsProcedure(ids) {
         return __awaiter(this, void 0, void 0, function* () {
             const agentData = Array.isArray(ids) ? { "assignedUser": ids } : { "assignedUser": ids };
-            console.log(`Agent data: ${JSON.stringify(agentData)}`);
-            const response = yield this.db.query('CALL GetTasksDataByAgentId(:agentData)', {
-                replacements: {
-                    agentData: JSON.stringify(agentData)
+            console.log(`Datos del agente: ${JSON.stringify(agentData)}`);
+            try {
+                const response = yield this.db.query('CALL GetTasksDataByAgentId(:agentData)', {
+                    replacements: {
+                        agentData: JSON.stringify(agentData)
+                    }
+                });
+                if (response && response[0] && response[0].tasks) {
+                    return response[0].tasks; // Devolver la respuesta directamente si ya es un objeto
                 }
-            });
-            let result = [];
-            if (response && response[0] && response[0].tasks) {
-                result = JSON.parse(response[0].tasks);
+                else {
+                    return []; // Devolver un array vacío si no hay tareas
+                }
             }
-            console.log(`Response from database: ${JSON.stringify(result)}`);
-            return result;
+            catch (error) {
+                console.error(error);
+                return []; // Devolver un array vacío en caso de error
+            }
         });
     }
     createTaskTypeExtinguisher(taskExtinguisher) {

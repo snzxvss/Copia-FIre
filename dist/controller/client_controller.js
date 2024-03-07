@@ -290,23 +290,43 @@ const exportClientsToXLSX = (req, res) => __awaiter(void 0, void 0, void 0, func
 });
 exports.exportClientsToXLSX = exportClientsToXLSX;
 const clientsXlsxReport = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { startDate, finalDate } = req.body;
-    const { usuario } = req.body;
-    const filePath = './src/temp/ClientReport.xlsx';
-    const fechaFormateada = (0, moment_1.default)().format("DD-MM-YYYY");
-    // Lee el archivo en un buffer
-    fs_1.default.readFile(filePath, (err, data) => {
-        if (err) {
-            console.error(err);
-            return res.status(500).json({ success: false, error: 'Error al leer el archivo.' });
-        }
-        else {
-            res.setHeader('Content-Disposition', `attachment; filename=${fechaFormateada}_CLIENT_REPORT.xlsx`);
-            res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-            return res.status(200).send(data);
-        }
-        ;
-    });
+    try {
+        const { startDate, finalDate } = req.body;
+        const data = { startDate, finalDate, searchKey: '' };
+        let result = yield clientDbProcedures.GetClientsDataToReport(data);
+        console.log(result);
+        let resultWithEmails = Object.assign(Object.assign({}, result), { emails: [
+                {
+                    email_pdf: "voss@gmail.com",
+                    address_pdf: "street 1324"
+                }
+            ] });
+        // Send 'result' to http://localhost:8080/task
+        const postResponse = yield axios_1.default.post('http://localhost:8080/client', resultWithEmails);
+        // GET request to http://localhost:8080/task/export-pdf
+        const getResponse = yield axios_1.default.get('http://localhost:8080/client/export-xls', { responseType: 'arraybuffer' });
+        // Convert the response to a XLS
+        const xls = Buffer.from(getResponse.data, 'binary').toString('base64');
+        console.log(postResponse.data);
+        const fechaFormateada = (0, moment_1.default)().format("DD/MM/YYYY HH:mm:ss A");
+        console.log(`${fechaFormateada} - User Client User Generated: `);
+        res.contentType("application/vnd.ms-excel");
+        return res.send(Buffer.from(xls, 'base64'));
+    }
+    catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            success: false,
+            errors: [
+                {
+                    msg: 'Error, comunicarse con el administrador',
+                    path: 'service',
+                    error
+                },
+            ],
+        });
+    }
+    ;
 });
 exports.clientsXlsxReport = clientsXlsxReport;
 const exportClientsToPDF = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
