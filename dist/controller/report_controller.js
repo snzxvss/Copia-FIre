@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.report = exports.reportsXlsxReport = exports.exportReportsToXLSX = exports.reportsPdfReport = exports.exportReportsToPDF = void 0;
 const moment_1 = __importDefault(require("moment"));
 const fs_1 = __importDefault(require("fs"));
+const task_procedures_1 = require("../db/procedures/task_procedures");
 const exportReportsToPDF = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { startDate, finalDate } = req.body;
     const { usuario } = req.body;
@@ -78,13 +79,32 @@ const reportsXlsxReport = (req, res) => __awaiter(void 0, void 0, void 0, functi
 });
 exports.reportsXlsxReport = reportsXlsxReport;
 const report = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { startDate, finalDate } = req.body;
-    const { usuario } = req.body;
-    res.status(200).json({
-        success: true,
-        msg: "Iformacion obtenida correctamente",
-        data: 'http://example.com'
-    });
+    try {
+        const { startDate, finalDate } = req.body;
+        const { usuario } = req.body;
+        // Crear una instancia de TaskDbProcedures
+        const taskDbProceduresInstance = new task_procedures_1.TaskDbProcedures();
+        // Llamada al procedimiento
+        const taskData = yield taskDbProceduresInstance.GetTaskDataComplete({ startDate, finalDate, searchKey: '' });
+        res.status(200).json({
+            success: true,
+            msg: "Informacion obtenida correctamentee",
+            taskData
+        });
+    }
+    catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            success: false,
+            errors: [
+                {
+                    msg: 'Error, comunicarse con el administrador',
+                    path: 'service',
+                    error
+                },
+            ],
+        });
+    }
 });
 exports.report = report;
 //# sourceMappingURL=report_controller.js.map

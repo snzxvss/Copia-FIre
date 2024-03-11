@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import moment from "moment";
 import fs from 'fs';
 import { User } from "../interfaces/user_interface";
+import { TaskDbProcedures } from "../db/procedures/task_procedures";
 
 
 
@@ -78,13 +79,33 @@ export const reportsXlsxReport = async (req: Request, res: Response) => {
 };
 
 export const report = async (req: Request, res: Response) => {
-    
+    try {
         const { startDate, finalDate } = req.body;
         const { usuario }: { usuario: User } = req.body
-    
+
+        // Crear una instancia de TaskDbProcedures
+        const taskDbProceduresInstance = new TaskDbProcedures();
+
+        // Llamada al procedimiento
+        const taskData = await taskDbProceduresInstance.GetTaskDataComplete({ startDate, finalDate, searchKey: ''});
+
         res.status(200).json({
             success:true,
-            msg:"Iformacion obtenida correctamente",
-            data:'http://example.com'
+            msg:"Informacion obtenida correctamentee",
+            taskData
         });
+    } catch (error) {
+        console.error(error);
+
+        return res.status(500).json({
+            success: false,
+            errors: [
+                {
+                    msg: 'Error, comunicarse con el administrador',
+                    path: 'service',
+                    error
+                },
+            ],
+        });
+    }
 };

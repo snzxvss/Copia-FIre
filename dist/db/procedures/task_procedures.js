@@ -89,7 +89,7 @@ class TaskDbProcedures {
             const agentData = Array.isArray(ids) ? { "assignedUser": ids } : { "assignedUser": ids };
             console.log(`Datos del agente: ${JSON.stringify(agentData)}`);
             try {
-                const response = yield this.db.query('CALL GetTasksDataByAgentId(:agentData)', {
+                const response = yield this.db.query('CALL GetTaskDataByAgentId(:agentData)', {
                     replacements: {
                         agentData: JSON.stringify(agentData)
                     }
@@ -148,6 +148,18 @@ class TaskDbProcedures {
                     jsonFilter: JSON.stringify({ startDate, finalDate, searchKey })
                 }
             });
+            return users;
+        });
+    }
+    GetTaskDataComplete(jsonFilter) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { startDate, finalDate, searchKey } = jsonFilter;
+            const [users] = yield this.db.query('CALL GetTaskDataComplete(:jsonFilter)', {
+                replacements: {
+                    jsonFilter: JSON.stringify({ startDate, finalDate, searchKey })
+                }
+            });
+            console.log(users);
             return users;
         });
     }

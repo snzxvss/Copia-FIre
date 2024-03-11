@@ -76,7 +76,7 @@ export class TaskDbProcedures {
         console.log(`Datos del agente: ${JSON.stringify(agentData)}`);
     
         try {
-            const response: any = await this.db.query('CALL GetTasksDataByAgentId(:agentData)', {
+            const response: any = await this.db.query('CALL GetTaskDataByAgentId(:agentData)', {
                 replacements: {
                     agentData: JSON.stringify(agentData)
                 }
@@ -138,6 +138,18 @@ export class TaskDbProcedures {
             }
         }) as Task[];
     
+        return users;
+    }
+
+    public async GetTaskDataComplete(jsonFilter: { startDate: string, finalDate: string, searchKey: string }): Promise<Task[]> {
+        const { startDate, finalDate, searchKey } = jsonFilter;
+    
+        const [users]: any = await this.db.query('CALL GetTaskDataComplete(:jsonFilter)', {
+            replacements: {
+                jsonFilter: JSON.stringify({ startDate, finalDate, searchKey })
+            }
+        }) as Task[];
+        console.log(users);
         return users;
     }
     
