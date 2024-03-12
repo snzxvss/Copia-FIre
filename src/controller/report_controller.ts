@@ -3,7 +3,7 @@ import moment from "moment";
 import fs from 'fs';
 import { User } from "../interfaces/user_interface";
 import { TaskDbProcedures } from "../db/procedures/task_procedures";
-
+import axios from 'axios';
 
 
 export const exportReportsToPDF = async (req: Request, res: Response) => {
@@ -80,19 +80,34 @@ export const reportsXlsxReport = async (req: Request, res: Response) => {
 
 export const report = async (req: Request, res: Response) => {
     try {
-        const { startDate, finalDate } = req.body;
+        const { startDate, finalDate, searchKey } = req.body;
         const { usuario }: { usuario: User } = req.body
 
         // Crear una instancia de TaskDbProcedures
         const taskDbProceduresInstance = new TaskDbProcedures();
 
         // Llamada al procedimiento
-        const taskData = await taskDbProceduresInstance.GetTaskDataComplete({ startDate, finalDate, searchKey: ''});
+        const taskDataResponse = await taskDbProceduresInstance.GetTaskDataComplete({ startDate, finalDate, searchKey});
 
+        console.log('taskDataResponse:', taskDataResponse);
+
+        // Extraer el objeto task del resultado
+        const taskData = (taskDataResponse as any).tasks ? (taskDataResponse as any).tasks : undefined;
+
+        console.log('taskData:', taskData);
+
+        // Enviar la respuesta de la base de datos a la URL proporcionada
+        const response = await axios.post('https://apidev.fdnycloud.org/api/cof/vendor/addpfejobexternal', taskData, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
         res.status(200).json({
             success:true,
-            msg:"Informacion obtenida correctamentee",
-            taskData
+            msg:"Informacion obtenida y enviada correctamente",
+            taskData,
+            externalApiResponse: response.data
         });
     } catch (error) {
         console.error(error);

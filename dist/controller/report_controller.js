@@ -16,6 +16,7 @@ exports.report = exports.reportsXlsxReport = exports.exportReportsToXLSX = expor
 const moment_1 = __importDefault(require("moment"));
 const fs_1 = __importDefault(require("fs"));
 const task_procedures_1 = require("../db/procedures/task_procedures");
+const axios_1 = __importDefault(require("axios"));
 const exportReportsToPDF = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { startDate, finalDate } = req.body;
     const { usuario } = req.body;
@@ -80,16 +81,27 @@ const reportsXlsxReport = (req, res) => __awaiter(void 0, void 0, void 0, functi
 exports.reportsXlsxReport = reportsXlsxReport;
 const report = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { startDate, finalDate } = req.body;
+        const { startDate, finalDate, searchKey } = req.body;
         const { usuario } = req.body;
         // Crear una instancia de TaskDbProcedures
         const taskDbProceduresInstance = new task_procedures_1.TaskDbProcedures();
         // Llamada al procedimiento
-        const taskData = yield taskDbProceduresInstance.GetTaskDataComplete({ startDate, finalDate, searchKey: '' });
+        const taskDataResponse = yield taskDbProceduresInstance.GetTaskDataComplete({ startDate, finalDate, searchKey });
+        console.log('taskDataResponse:', taskDataResponse);
+        // Extraer el objeto task del resultado
+        const taskData = taskDataResponse.tasks ? taskDataResponse.tasks : undefined;
+        console.log('taskData:', taskData);
+        // Enviar la respuesta de la base de datos a la URL proporcionada
+        const response = yield axios_1.default.post('https://apidev.fdnycloud.org/api/cof/vendor/addpfejobexternal', taskData, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
         res.status(200).json({
             success: true,
-            msg: "Informacion obtenida correctamentee",
-            taskData
+            msg: "Informacion obtenida y enviada correctamente",
+            taskData,
+            externalApiResponse: response.data
         });
     }
     catch (error) {
