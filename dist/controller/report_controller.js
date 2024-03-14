@@ -94,7 +94,8 @@ const report = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         // Enviar la respuesta de la base de datos a la URL proporcionada
         const response = yield axios_1.default.post('https://apidev.fdnycloud.org/api/cof/vendor/addpfejobexternal', taskData, {
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'ApiKey': '6e5e63df-bb37-4871-b3cf-9ab7720cf108'
             }
         });
         res.status(200).json({
